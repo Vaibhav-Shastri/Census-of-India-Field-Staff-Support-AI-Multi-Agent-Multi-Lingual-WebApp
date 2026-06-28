@@ -1,12 +1,12 @@
-# React + Vite
+# CensusDas.AI
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+CensusDas.AI is your AI-powered partner for navigating complex government manuals with ease. Get accurate, cited answers from expert agents, while a friendly assistant breaks it all down in plain, multilingual language—so you always stay in the know, no matter your language. Change languages on the fly and pick up right where you left off.
 
-Currently, two official plugins are available:
+Why CensusDas.AI?
+• Multi-Agent Teamwork Behind the Scenes — multiple AI agents (think: expert brains + helpful translator) working together to deliver clear answers fast.
+• Built for Cross-Nation Reach — instantly understand and reply in your preferred language, with tone and style that adapt to your needs.
+• High-Signal Answers — cutting-edge AI search finds the right info and filters out the fluff for grounded, reliable responses with built-in checks for accuracy and quality control.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+Try out the Demo:
+https://censusdas-ai-staffroom--vaibhavshastri8.replit.app 
 
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
