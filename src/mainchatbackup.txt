@@ -1,0 +1,224 @@
+import React, { useState, useEffect, useRef } from "react";
+import "./index.css";
+
+// Dummy language/personality list
+const assistantOptions = [
+  { value: "simple_english", label: "Simple English" },
+  { value: "hindi", label: "Hindi (Roman)" },
+  { value: "bengali", label: "Bengali (Roman)" },
+  { value: "tamil", label: "Tamil (Roman)" },
+  { value: "urdu", label: "Urdu (Roman)" },
+  { value: "punjabi", label: "Punjabi (Roman)" },
+];
+
+// Demo avatars for AI
+const AI_PARTICIPANTS = {
+  host: {
+    name: "CensusDas.AI.Host",
+    avatar: "https://randomuser.me/api/portraits/men/69.jpg"
+  },
+  expert: {
+    name: "CensusDas.AI.Expert",
+    avatar: "https://randomuser.me/api/portraits/men/32.jpg"
+  },
+  assistant: {
+    name: "CensusDas.AI.Assistant",
+    avatar: "https://randomuser.me/api/portraits/men/24.jpg"
+  }
+};
+
+export default function MainChat({ isLoggedIn, onLogout }) {
+  const [assistantLang, setAssistantLang] = useState(assistantOptions[0].value);
+  const [showDropdown, setShowDropdown] = useState(false);
+  const [input, setInput] = useState("");
+  const [messages, setMessages] = useState([
+    {
+      id: 1,
+      sender: "host",
+      content: "Welcome to the CensusDas.AI Staff Room! How can we assist you today?",
+      time: "09:01"
+    }
+  ]);
+  const chatEndRef = useRef(null);
+
+  const currentLang = assistantOptions.find(opt => opt.value === assistantLang);
+
+  // Scroll to bottom on new messages
+  useEffect(() => {
+    chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages]);
+
+  // Close dropdown on outside click
+  useEffect(() => {
+    function close(e) {
+      if (
+        !e.target.closest('.glassy-dropdown-btn') &&
+        !e.target.closest('.glassy-dropdown-list')
+      ) {
+        setShowDropdown(false);
+      }
+    }
+    if (showDropdown) window.addEventListener('mousedown', close);
+    return () => window.removeEventListener('mousedown', close);
+  }, [showDropdown]);
+
+  // Simulated reply
+  function handleSend(e) {
+    e.preventDefault();
+    if (!input.trim()) return;
+    setMessages(msgs => [
+      ...msgs,
+      {
+        id: msgs.length + 1,
+        sender: "user",
+        content: input,
+        time: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })
+      }
+    ]);
+    setInput("");
+    // Fake "host" reply after 800ms
+    setTimeout(() => {
+      setMessages(msgs => [
+        ...msgs,
+        {
+          id: msgs.length + 2,
+          sender: ["host", "expert", "assistant"][Math.floor(Math.random() * 3)],
+          content: "Here is an example reply from " + ["Host", "Expert", "Assistant"][Math.floor(Math.random() * 3)] + ".",
+          time: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })
+        }
+      ]);
+    }, 800);
+  }
+
+  return (
+    <div className="main-area">
+      <div className="chat-card" style={{ position: "relative" }}>
+        {/* --- HEADER: Brand & Logout --- */}
+        <div className="mainchat-header-top">
+          <div className="chat-header-title">
+            CensusDas.AI Staff Room
+          </div>
+          <button
+            className="chat-logout-btn"
+            title="Logout"
+            aria-label="Logout"
+            style={{ marginRight: 10 }}
+            onClick={onLogout}
+          >
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" style={{verticalAlign: 'middle', marginRight: 6}} xmlns="http://www.w3.org/2000/svg">
+              <path d="M16 17L21 12L16 7" stroke="#b0b8c9" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+              <path d="M21 12H9" stroke="#b0b8c9" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+              <path d="M5 12V19C5 19.5304 5.21071 20.0391 5.58579 20.4142C5.96086 20.7893 6.46957 21 7 21H12" stroke="#b0b8c9" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+              <path d="M12 3H7C6.46957 3 5.96086 3.21071 5.58579 3.58579C5.21071 3.96086 5 4.46957 5 5V12" stroke="#b0b8c9" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+            </svg>
+            Logout
+          </button>
+        </div>
+
+        {/* --- SUBHEADER: Username & Dropdown --- */}
+        <div className="mainchat-header-bottom">
+          <span className="chat-username-badge">
+            Logged in as Beta User 
+          </span>
+          <span className="chat-username-badge">
+            Choose Your Assistant's Language & Cultural Flavor
+          </span>
+          <div style={{ position: "relative" }}>
+            <button
+              type="button"
+              className="glassy-dropdown-btn"
+              onClick={() => setShowDropdown(!showDropdown)}
+              aria-haspopup="listbox"
+              aria-expanded={showDropdown}
+              tabIndex={0}
+            >
+              <span>{currentLang.label}</span>
+              <span className="chevron" style={{ marginLeft: 8, fontSize: "1.04em" }}>▼</span>
+            </button>
+            {showDropdown && (
+              <div className="glassy-dropdown-list">
+                {assistantOptions.map(opt => (
+                  <div
+                    key={opt.value}
+                    className={
+                      "glassy-dropdown-item" +
+                      (assistantLang === opt.value ? " active" : "")
+                    }
+                    onClick={() => {
+                      setAssistantLang(opt.value);
+                      setShowDropdown(false);
+                    }}
+                    role="option"
+                    aria-selected={assistantLang === opt.value}
+                  >
+                    {opt.label}
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* --- Lock/Blur Overlay --- */}
+        {!isLoggedIn && (
+          <div className="chat-lock-overlay">
+            <div style={{ fontSize: 20, marginBottom: 18, color: "#808087" }}>🔒</div>
+            <div style={{ fontSize: "1em", color: "#556", fontWeight: 600 }}>
+              Chat is locked. Please login to participate.
+            </div>
+          </div>
+        )}
+
+        {/* --- Actual Chat Thread --- */}
+        <div className="chat-thread">
+          
+          {messages.map(msg => (
+            <ChatBubble
+              key={msg.id}
+              sender={msg.sender}
+              content={msg.content}
+              time={msg.time}
+            />
+          ))}
+          <div ref={chatEndRef} />
+        </div>
+
+        {/* --- Chat input (if logged in) --- */}
+        {isLoggedIn && (
+          <form className="chat-input-bar" onSubmit={handleSend}>
+            <input
+              className="chat-input"
+              placeholder="Type your message…"
+              value={input}
+              onChange={e => setInput(e.target.value)}
+              autoFocus
+            />
+            <button className="chat-send-btn" type="submit" aria-label="Send">
+              <span>➤</span>
+            </button>
+          </form>
+        )}
+      </div>
+    </div>
+  );
+}
+
+// --- ChatBubble Component (handles both user and AI bubbles) ---
+function ChatBubble({ sender, content, time }) {
+  const isUser = sender === "user";
+  const ai = AI_PARTICIPANTS[sender];
+  return (
+    <div className={`bubble-row ${isUser ? "bubble-row-user" : "bubble-row-ai"}`}>
+      {!isUser && (
+        <img className="bubble-avatar" src={ai.avatar} alt={ai.name} />
+      )}
+      <div className={`chat-bubble ${isUser ? "chat-bubble-user" : "chat-bubble-ai"}`}>
+        {!isUser && (
+          <div className="bubble-name">{ai.name.replace("CensusDas.AI.", "")}</div>
+        )}
+        <div className="bubble-text">{content}</div>
+        <div className="bubble-time">{time}</div>
+      </div>
+    </div>
+  );
+}
