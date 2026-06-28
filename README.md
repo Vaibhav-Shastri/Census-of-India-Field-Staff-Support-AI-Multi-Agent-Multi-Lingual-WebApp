@@ -3,7 +3,7 @@
 Try out the Demo:
 https://censusdas-ai-staffroom--vaibhavshastri8.replit.app 
 
-## 1. What This Product Is
+## 1. What Is It?
 
 **CensusDas.AI Staff Room** is a production-ready, multi-agent AI chat platform built specifically for Census of India field officers — Enumerators and Supervisors. It allows users to ask procedural, legal, and operational questions about census manuals and receive cited, contextually accurate answers in multiple Indian languages and communication styles.
 
